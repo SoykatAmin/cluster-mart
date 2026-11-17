@@ -1,0 +1,57 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: "cluster-mart"
+  title: "cluster-mart"
+  description: "Production AWS EKS Cluster cluster-mart (eu-west-1, Kubernetes 1.37) provisioned with Terraform and Tekton."
+  annotations:
+    # Tekton Plugin Integration (Janus-IDP) - points to exact pipeline name
+    janus-idp.io/tekton: "cluster-mart-provisioning"
+    tekton.dev/cicd: "true"
+    # Kubernetes Core Plugin & PEP Mapping
+    backstage.io/kubernetes-id: "cluster-mart"
+    backstage.io/kubernetes-cluster: "cluster-mart"
+    backstage.io/kubernetes-namespace: "bs-team-alpha-dev"
+    # Reconciler & PDP Multi-Tenant Group Mapping
+    company.io/owner-group: "group:default/team-alpha"
+    # Cloud Provider & Governance Metadata
+    aws.amazon.com/region: "eu-west-1"
+    aws.amazon.com/owner: "so.amin"
+    backstage.io/techdocs-ref: dir:.
+  labels:
+    owner: so.amin
+    cloud-provider: aws
+    managed-by: terraform-tekton
+  tags:
+    - aws
+    - eks
+    - kubernetes
+    - terraform
+    - tekton
+    - "eu-west-1"
+    - "k8s-1-37"
+spec:
+  type: infrastructure
+  owner: "group:default/team-alpha"
+  system: platform
+  lifecycle: production
+  providesResources:
+    - "resource:default/cluster-mart-cluster"
+---
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: "cluster-mart-cluster"
+  title: "cluster-mart (EKS Cluster)"
+  description: "Target Kubernetes Cluster resource for cluster-mart."
+  annotations:
+    aws.amazon.com/region: "eu-west-1"
+    aws.amazon.com/owner: "so.amin"
+  labels:
+    owner: so.amin
+    cloud-provider: aws
+spec:
+  type: kubernetes-cluster
+  owner: "group:default/team-alpha"
+  system: platform
+  lifecycle: production

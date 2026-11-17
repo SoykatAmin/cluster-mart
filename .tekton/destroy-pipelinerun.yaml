@@ -1,0 +1,42 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  generateName: "cluster-mart-destroy-run-"
+  namespace: "bs-team-alpha-dev"
+  labels:
+    tekton.dev/pipeline: "cluster-mart-destroy"
+    app.kubernetes.io/name: "cluster-mart"
+    app.kubernetes.io/part-of: "cluster-mart"
+    owner: so.amin
+spec:
+  pipelineRef:
+    name: "cluster-mart-destroy"
+  taskRunTemplate:
+    serviceAccountName: tekton-pipeline
+  params:
+    - name: repo-url
+      value: "https://github.com/SoykatAmin/cluster-mart.git"
+    - name: revision
+      value: main
+    - name: cluster-name
+      value: "cluster-mart"
+    - name: aws-region
+      value: "eu-west-1"
+    - name: state-bucket
+      value: "so-amin-idp-terraform-backend"
+    - name: state-lock-table
+      value: "so-amin-idp-terraform-backend-lock-table"
+  workspaces:
+    - name: shared-data
+      volumeClaimTemplate:
+        metadata:
+          labels:
+            owner: so.amin
+            cluster: "cluster-mart"
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 5Gi
+          storageClassName: gp3
